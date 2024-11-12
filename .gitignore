@@ -4,3 +4,4 @@ node_modules/
 *.exe
 *.env
 !*.env.example
+package-lock.json

@@ -12,7 +12,7 @@ export function insertUser(username, email, password) {
     "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
   ).run(username, email, password);
 
-  return dbResult.changes > 0;
+  return dbResult.lastInsertRowid;
 }
 
 /**
@@ -21,6 +21,6 @@ export function insertUser(username, email, password) {
  */
 export function checkCredentials(email, password) {
   return DB.prepare(
-    "SELECT username, email FROM users WHERE email=? AND password=?"
+    "SELECT id, username, email FROM users WHERE email=? AND password=?"
   ).get(email, password);
 }

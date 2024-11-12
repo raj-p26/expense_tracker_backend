@@ -1,0 +1,29 @@
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    inserted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS incomes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    income_amount INTEGER NOT NULL,
+    income_type VARCHAR(255) NOT NULL,
+    income_description TEXT NOT NULL,
+    income_date DATE NOT NULL,
+    user_id INTEGER NOT NULL,
+    inserted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS expenses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    expense_amount INTEGER NOT NULL,
+    expense_type VARCHAR(255) NOT NULL,
+    expense_description TEXT NOT NULL,
+    expense_date DATE NOT NULL,
+    user_id INTEGER NOT NULL,
+    inserted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+);

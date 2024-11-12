@@ -1,6 +1,12 @@
 import { Router } from "express";
 import * as db from "./db.js";
 import { hash } from "crypto";
+import jwt from "jsonwebtoken";
+import { config } from "dotenv";
+
+config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const authRouter = Router();
 
@@ -23,7 +29,16 @@ async function registerUser(req, res) {
     hash("sha1", body["password"])
   );
 
-  res.send({ status: "done", dbResult });
+  const token = jwt.sign(
+    {
+      username: body["username"],
+      email: body["email"],
+      id: dbResult,
+    },
+    JWT_SECRET
+  );
+
+  res.send({ status: "done", token });
 }
 
 /**
@@ -40,9 +55,15 @@ async function authenticate(req, res) {
   );
 
   if (dbResult) {
-    res.send({ status: "done", ...dbResult });
+    const token = jwt.sign(
+      {
+        ...dbResult,
+      },
+      JWT_SECRET
+    );
+    res.send({ status: "done", token });
   } else {
-    res.status(401).send({ status: "undone lol", message: "Unauthorized" });
+    res.status(401).send({ status: "failed", message: "Unauthorized" });
   }
 }
 
