@@ -18,9 +18,21 @@ export function insertUser(username, email, password) {
 /**
  * @param {string} email
  * @param {string} password
+ * @returns {number | bigint} ID of the user
  */
 export function checkCredentials(email, password) {
+  return DB.prepare("SELECT id FROM users WHERE email=? AND password=?").get(
+    email,
+    password
+  );
+}
+
+/**
+ * @param {string} userID ID of the user
+ * @returns {{income_type: string; income_amount: string; income_description: string; income_date: string;}[]} an array containing all incomes of the user
+ */
+export function allIncomes(userID) {
   return DB.prepare(
-    "SELECT id, username, email FROM users WHERE email=? AND password=?"
-  ).get(email, password);
+    "SELECT income_type, income_amount, income_description, income_date FROM incomes WHERE user_id=?"
+  ).all(userID);
 }
