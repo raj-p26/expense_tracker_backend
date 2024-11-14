@@ -31,7 +31,7 @@ async function registerUser(req, res) {
 
   const token = jwt.sign(userID, JWT_SECRET);
 
-  res.send({ status: "done", token });
+  res.send({ status: "done", token, username: body["username"] });
 }
 
 /**
@@ -42,14 +42,14 @@ async function registerUser(req, res) {
  */
 async function authenticate(req, res) {
   const { body } = req;
-  const userID = db.checkCredentials(
+  const user = db.checkCredentials(
     body["email"],
     hash("sha1", body["password"])
   );
 
-  if (userID) {
-    const token = jwt.sign(userID, JWT_SECRET);
-    res.send({ status: "done", token });
+  if (user) {
+    const token = jwt.sign(user.id, JWT_SECRET);
+    res.send({ status: "done", token, username: user.username });
   } else {
     res.status(401).send({ status: "failed", message: "Unauthorized" });
   }
