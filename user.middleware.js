@@ -23,7 +23,7 @@ export function verifyUser(req, res, next) {
     res.status(401).send({ status: "failed", message: "You are unauthorized" });
     return;
   }
-  req.headers["user_id"] = payload.id;
+  req.headers["user_id"] = payload;
 
   next();
 }

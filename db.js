@@ -42,6 +42,16 @@ export function allIncomes(userID) {
 }
 
 /**
+ * @param {string} userID ID of the user
+ * @returns {{ total_income: int; avg_income: int; }} statistics of income
+*/
+export function getIncomeStatistics(userID) {
+  return DB.prepare(
+    "SELECT SUM(income_amount) as total_income, ROUND(AVG(income_amount)) as avg_income from incomes WHERE user_id=?"
+  ).get(userID);
+}
+
+/**
  * @param {{
  * income_type:string;
  * income_amount:string;
@@ -100,6 +110,16 @@ export function updateIncome(income) {
     income.income_date,
     income.id
   );
+}
+
+/**
+ * @param {string} userID ID of the user
+ * @returns {{ total_expense: int; avg_expense: int; }} statistics of expense
+*/
+export function getExpenseStatistics(userID) {
+  return DB.prepare(
+    "SELECT SUM(expense_amount) as total_expense, ROUND(AVG(expense_amount)) as avg_expense from expenses WHERE user_id=?"
+  ).get(userID);
 }
 
 /**

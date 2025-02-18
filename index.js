@@ -15,7 +15,10 @@ import {
   deleteIncome,
   getIncomeByID,
   updateIncome,
+  getIncomeStatistics,
+  getExpenseStatistics
 } from "./db.js";
+import { verifyUser } from "./user.middleware.js";
 
 const app = express();
 const userSockets = {};
@@ -24,13 +27,33 @@ app.use(cors());
 app.use(express.json());
 app.use("/auth", authRouter);
 
-const server = app.listen(8000, () => {
+app.get("/incomes/:id", verifyUser, function (req, res) {
+    const id = req.params.id;
+    res.send(getIncomeByID(id));
+});
+
+app.get("/expenses/:id", verifyUser, function (req, res) {
+    const id = req.params.id;
+    res.send(getExpenseByID(id));
+});
+
+app.get("/stats/incomes", verifyUser, function (req, res) {
+    const result = getIncomeStatistics(req.headers.user_id);
+    res.send(result);
+});
+
+app.get("/stats/expenses", verifyUser, function (req, res) {
+    const result = getExpenseStatistics(req.headers.user_id);
+    res.send(result);
+});
+
+const server = app.listen(8000, "localhost", () => {
   console.log("app listening on port 8000");
 });
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost",
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
@@ -170,3 +193,4 @@ incomesWS.on("connect", (socket) => {
     });
   });
 });
+
